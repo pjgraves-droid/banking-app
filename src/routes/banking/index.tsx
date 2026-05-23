@@ -110,9 +110,9 @@ function BankingDashboard() {
 
       {/* Tabs */}
       <div className="mb-4 sm:mb-6 flex gap-1 rounded-xl bg-white p-1 shadow-sm border border-gray-100">
-        <TabButton active={activeTab === "funds"} onClick={() => setTab("funds")} icon={<Landmark size={15} />} label="Funds Movement" />
-        <TabButton active={activeTab === "history"} onClick={() => setTab("history")} icon={<Clock size={15} />} label="Transaction History" />
-        <TabButton active={activeTab === "export"} onClick={() => setTab("export")} icon={<Download size={15} />} label="Export for Audit" />
+        <TabButton active={activeTab === "funds"} onClick={() => setTab("funds")} icon={<Landmark size={15} />} label="Funds" smLabel="Funds Movement" />
+        <TabButton active={activeTab === "history"} onClick={() => setTab("history")} icon={<Clock size={15} />} label="History" smLabel="Transaction History" />
+        <TabButton active={activeTab === "export"} onClick={() => setTab("export")} icon={<Download size={15} />} label="Export" smLabel="Export for Audit" />
       </div>
 
       {/* Tab Content */}
@@ -127,18 +127,19 @@ function BankingDashboard() {
   );
 }
 
-function TabButton({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
+function TabButton({ active, onClick, icon, label, smLabel }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string; smLabel: string }) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold transition-all ${
+      className={`flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-3 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold transition-all min-w-0 ${
         active
           ? "bg-brand-600 text-white shadow-sm"
           : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
       }`}
     >
       {icon}
-      <span className="truncate">{label}</span>
+      <span className="hidden sm:inline">{smLabel}</span>
+      <span className="sm:hidden truncate">{label}</span>
     </button>
   );
 }

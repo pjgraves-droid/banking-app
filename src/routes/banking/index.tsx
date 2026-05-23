@@ -87,9 +87,7 @@ function BankingDashboard() {
           <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white" />
         </div>
         <div className="relative flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-            <Landmark size={24} className="text-white" />
-          </div>
+          <img src="/WBA_Logo.jpg" alt="Westpac" className="h-10 rounded-lg" />
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">Banking</h1>
             <p className="text-sm text-white/70">

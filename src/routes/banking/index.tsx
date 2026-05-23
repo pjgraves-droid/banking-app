@@ -14,6 +14,10 @@ import { z } from "zod";
 import { api } from "@/api";
 import { FormFactory, useFormFactory, type FormConfig } from "@/components/form-factory";
 
+function formatCurrency(value: number): string {
+  return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 type TabKey = "funds" | "history" | "export";
 type AccountResponse = { username: string; balance: number };
 type MovementResponse = { message: string; username: string; newBalance: number };
@@ -158,7 +162,7 @@ function FundsTab() {
       try {
         const data = await lookupMutation.mutateAsync(username);
         setBalance(data.balance);
-        setResult({ message: `Balance for ${data.username}: $${data.balance.toFixed(2)}`, style: "success" });
+        setResult({ message: `Balance for ${data.username}: $${formatCurrency(data.balance)}`, style: "success" });
       } catch (err: unknown) {
         setResult({ message: await getErrorMessage(err), style: "error" });
       }
@@ -175,7 +179,7 @@ function FundsTab() {
     try {
       const data = await mutate.mutateAsync({ username, amount: numAmount });
       setBalance(data.newBalance);
-      setResult({ message: `${data.message} New balance: $${data.newBalance.toFixed(2)}`, style: "success" });
+      setResult({ message: `${data.message} New balance: $${formatCurrency(data.newBalance)}`, style: "success" });
     } catch (err: unknown) {
       setResult({ message: await getErrorMessage(err), style: "error" });
     }
@@ -190,7 +194,7 @@ function FundsTab() {
       {balance !== null && (
         <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-700 px-5 py-4 text-white">
           <span className="text-xs font-medium text-white/70">Current Balance</span>
-          <p className="font-mono text-2xl font-bold">${balance.toFixed(2)}</p>
+          <p className="font-mono text-2xl font-bold">${formatCurrency(balance)}</p>
         </div>
       )}
     </div>
@@ -264,7 +268,7 @@ function TransactionTable({ transactions }: { transactions: Transaction[] }) {
                   <span className="text-gray-700">{tx.transactionType}</span>
                 </span>
               </td>
-              <td className="px-4 py-3 text-right font-mono font-semibold text-gray-800">${tx.amount.toFixed(2)}</td>
+              <td className="px-4 py-3 text-right font-mono font-semibold text-gray-800">${formatCurrency(tx.amount)}</td>
             </tr>
           ))}
         </tbody>

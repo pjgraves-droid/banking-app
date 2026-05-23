@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { eq, sql } from "drizzle-orm";
-import { db } from "../_lib/db";
-import { bankingAccounts, bankingTransactions } from "../_lib/schema";
-import { apiHandler } from "../_lib/handler";
+import { db } from "../_lib/db.js";
+import { bankingAccounts, bankingTransactions } from "../_lib/schema.js";
+import { apiHandler } from "../_lib/handler.js";
 
 export default apiHandler({
   POST: async (req: VercelRequest, res: VercelResponse) => {

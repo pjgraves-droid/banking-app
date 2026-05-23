@@ -6,6 +6,13 @@ import {
   Download,
   Search,
   AlertTriangle,
+  ChevronDown,
+  Code,
+  Database,
+  Globe,
+  Paintbrush,
+  Timer,
+  Cpu,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -13,6 +20,10 @@ import { useState } from "react";
 import { z } from "zod";
 import { api } from "@/api";
 import { FormFactory, useFormFactory, type FormConfig } from "@/components/form-factory";
+
+function formatCurrency(value: number): string {
+  return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
 type TabKey = "funds" | "history" | "export";
 type AccountResponse = { username: string; balance: number };
@@ -79,42 +90,56 @@ function BankingDashboard() {
   const setTab = (t: TabKey) => navigate({ search: { tab: t }, replace: true });
 
   return (
-    <div className="mx-auto max-w-3xl px-8 py-10">
-      <div className="mb-8 flex items-start gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-800">
-          <Landmark size={22} className="text-zinc-200" />
+    <div className="mx-auto max-w-3xl px-4 sm:px-8">
+      {/* Header */}
+      <div className="relative -mx-4 sm:-mx-8 mb-6 sm:mb-8 overflow-hidden bg-gradient-to-br from-brand-600 to-brand-700 px-4 sm:px-8 pb-6 sm:pb-8 pt-8 sm:pt-10">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white" />
+          <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white" />
         </div>
-        <div>
-          <h1 className="mb-0.5 font-mono text-lg font-semibold text-zinc-100">banking</h1>
-          <p className="text-[13px] text-zinc-500">
-            Manage account balances, view transaction history, and export audit records.
-          </p>
+        <div className="relative flex items-center gap-4">
+          <img src="/WBA_Logo.jpg" alt="Westpac" className="h-8 sm:h-10 rounded-lg" />
+          <div>
+            <h1 className="text-base sm:text-xl font-bold text-white tracking-tight">Account Balance Management</h1>
+            <p className="text-xs sm:text-sm text-white/70 hidden sm:block">
+              Manage balances, transactions, and audit exports
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="mb-6 flex gap-1 border-b border-zinc-800">
-        <TabButton active={activeTab === "funds"} onClick={() => setTab("funds")} icon={<Landmark size={14} />} label="Funds Movement" />
-        <TabButton active={activeTab === "history"} onClick={() => setTab("history")} icon={<Clock size={14} />} label="Transaction History" />
-        <TabButton active={activeTab === "export"} onClick={() => setTab("export")} icon={<Download size={14} />} label="Export for Audit" />
+      {/* Tabs */}
+      <div className="mb-4 sm:mb-6 flex gap-1 rounded-xl bg-white p-1 shadow-sm border border-gray-100">
+        <TabButton active={activeTab === "funds"} onClick={() => setTab("funds")} icon={<Landmark size={15} />} label="Funds" smLabel="Funds Movement" />
+        <TabButton active={activeTab === "history"} onClick={() => setTab("history")} icon={<Clock size={15} />} label="History" smLabel="Transaction History" />
+        <TabButton active={activeTab === "export"} onClick={() => setTab("export")} icon={<Download size={15} />} label="Export" smLabel="Export for Audit" />
       </div>
 
-      {activeTab === "funds" && <FundsTab />}
-      {activeTab === "history" && <HistoryTab />}
-      {activeTab === "export" && <ExportTab />}
+      {/* Tab Content */}
+      <div className="card p-4 sm:p-6 mb-6">
+        {activeTab === "funds" && <FundsTab />}
+        {activeTab === "history" && <HistoryTab />}
+        {activeTab === "export" && <ExportTab />}
+      </div>
+
+      <HowItWasBuilt />
     </div>
   );
 }
 
-function TabButton({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
+function TabButton({ active, onClick, icon, label, smLabel }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string; smLabel: string }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium ${
-        active ? "border-b-2 border-zinc-200 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+      className={`flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-lg px-1.5 sm:px-3 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold transition-all min-w-0 ${
+        active
+          ? "bg-brand-600 text-white shadow-sm"
+          : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
       }`}
     >
       {icon}
-      {label}
+      <span className="hidden sm:inline">{smLabel}</span>
+      <span className="sm:hidden truncate">{label}</span>
     </button>
   );
 }
@@ -147,7 +172,7 @@ function FundsTab() {
       try {
         const data = await lookupMutation.mutateAsync(username);
         setBalance(data.balance);
-        setResult({ message: `Balance for ${data.username}: $${data.balance.toFixed(2)}`, style: "success" });
+        setResult({ message: `Balance for ${data.username}: $${formatCurrency(data.balance)}`, style: "success" });
       } catch (err: unknown) {
         setResult({ message: await getErrorMessage(err), style: "error" });
       }
@@ -164,7 +189,7 @@ function FundsTab() {
     try {
       const data = await mutate.mutateAsync({ username, amount: numAmount });
       setBalance(data.newBalance);
-      setResult({ message: `${data.message} New balance: $${data.newBalance.toFixed(2)}`, style: "success" });
+      setResult({ message: `${data.message} New balance: $${formatCurrency(data.newBalance)}`, style: "success" });
     } catch (err: unknown) {
       setResult({ message: await getErrorMessage(err), style: "error" });
     }
@@ -177,9 +202,9 @@ function FundsTab() {
       <FormFactory config={fundsFormConfig} values={form.values} setValue={form.setValue} onSubmit={handleSubmit} onReset={handleReset} isValid={form.isValid} isPending={isPending} />
       <ResultMessage result={result} />
       {balance !== null && (
-        <div className="card px-4 py-3">
-          <span className="text-xs text-zinc-500">Current Balance</span>
-          <p className="font-mono text-xl font-semibold text-zinc-100">${balance.toFixed(2)}</p>
+        <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-700 px-5 py-4 text-white">
+          <span className="text-xs font-medium text-white/70">Current Balance</span>
+          <p className="font-mono text-2xl font-bold">${formatCurrency(balance)}</p>
         </div>
       )}
     </div>
@@ -223,33 +248,43 @@ function HistoryTab() {
 }
 
 function TransactionTable({ transactions }: { transactions: Transaction[] }) {
-  if (transactions.length === 0) return <p className="text-sm text-zinc-500">No transaction records match the selected criteria.</p>;
+  if (transactions.length === 0) return <p className="text-sm text-gray-400">No transaction records match the selected criteria.</p>;
 
   return (
-    <div className="card overflow-hidden">
+    <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+    <div className="overflow-hidden rounded-xl border border-gray-100 min-w-[480px] sm:min-w-0">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-zinc-800 text-xs text-zinc-500">
-            <th className="px-4 py-2">Date/Time</th>
-            <th className="px-4 py-2">Type</th>
-            <th className="px-4 py-2 text-right">Amount</th>
+          <tr className="border-b border-gray-100 bg-gray-50">
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date/Time</th>
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((tx) => (
-            <tr key={tx.id} className="border-b border-zinc-800/50 last:border-0">
-              <td className="px-4 py-2 font-mono text-xs text-zinc-400">{new Date(tx.transactionDatetime).toLocaleString()}</td>
-              <td className="px-4 py-2">
-                <span className="inline-flex items-center gap-1 text-xs">
-                  {tx.transactionType === "Deposit" ? <ArrowDown size={12} className="text-emerald-400" /> : <ArrowUp size={12} className="text-red-400" />}
-                  {tx.transactionType}
+            <tr key={tx.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+              <td className="px-3 sm:px-4 py-3 font-mono text-xs text-gray-500 whitespace-nowrap">{new Date(tx.transactionDatetime).toLocaleString()}</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                  {tx.transactionType === "Deposit" ? (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50">
+                      <ArrowDown size={11} className="text-emerald-600" />
+                    </span>
+                  ) : (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-50">
+                      <ArrowUp size={11} className="text-brand-600" />
+                    </span>
+                  )}
+                  <span className="text-gray-700">{tx.transactionType}</span>
                 </span>
               </td>
-              <td className="px-4 py-2 text-right font-mono text-zinc-200">${tx.amount.toFixed(2)}</td>
+              <td className="px-3 sm:px-4 py-3 text-right font-mono font-semibold text-gray-800 whitespace-nowrap">${formatCurrency(tx.amount)}</td>
             </tr>
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
@@ -279,7 +314,7 @@ function ExportTab() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-zinc-500">Export transaction records for backup and audit review.</p>
+      <p className="text-sm text-gray-500">Export transaction records for backup and audit review.</p>
       <FormFactory config={exportFormConfig} values={form.values} setValue={form.setValue} onSubmit={handleSubmit} onReset={form.reset} isValid={true} isPending={false} />
       <ResultMessage result={result} />
     </div>
@@ -290,7 +325,11 @@ function ResultMessage({ result }: { result: { message: string; style: "success"
   if (!result) return null;
   const isError = result.style === "error";
   return (
-    <div className={`flex items-start gap-2 rounded-lg px-4 py-3 text-sm ${isError ? "bg-red-950/30 text-red-300" : "bg-emerald-950/30 text-emerald-300"}`}>
+    <div className={`flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm font-medium ${
+      isError
+        ? "bg-red-50 text-brand-600 border border-red-100"
+        : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+    }`}>
       {isError ? <AlertTriangle size={16} className="mt-0.5 shrink-0" /> : <Search size={16} className="mt-0.5 shrink-0" />}
       {result.message}
     </div>
@@ -306,4 +345,77 @@ async function getErrorMessage(err: unknown): Promise<string> {
   }
   if (err instanceof Error) return err.message;
   return "An unexpected error occurred.";
+}
+
+function HowItWasBuilt() {
+  const [open, setOpen] = useState(false);
+
+  const techStack = [
+    { icon: <Code size={16} />, label: "Frontend", detail: "React 19, TypeScript, Tailwind CSS, TanStack Router" },
+    { icon: <Cpu size={16} />, label: "Backend", detail: "Vercel Serverless Functions (Node.js), Drizzle ORM" },
+    { icon: <Database size={16} />, label: "Database", detail: "PostgreSQL hosted on Supabase (connection pooler)" },
+    { icon: <Globe size={16} />, label: "Hosting", detail: "Vercel with automatic CI/CD from GitHub" },
+    { icon: <Paintbrush size={16} />, label: "Design", detail: "Westpac-inspired branding with custom Tailwind theme" },
+  ];
+
+  return (
+    <div className="mb-10">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-xl bg-white px-4 sm:px-5 py-3 sm:py-4 text-left shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
+      >
+        <span className="text-sm font-semibold text-gray-700">How this app was built</span>
+        <ChevronDown size={18} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="mt-2 rounded-xl bg-white px-4 sm:px-6 py-4 sm:py-5 shadow-sm border border-gray-100 space-y-4 sm:space-y-5 text-sm text-gray-600 leading-relaxed">
+          <p>
+            This application was built end-to-end by{" "}
+            <a href="https://devin.ai" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-600 hover:underline">
+              Devin
+            </a>
+            , an autonomous AI software engineer developed by Cognition AI. The entire process — from initial deployment
+            to database configuration, UI design, and test data generation — was completed in a single session
+            taking approximately <strong>2 hours</strong>.
+          </p>
+
+          <div>
+            <h3 className="mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Technology Stack</h3>
+            <div className="space-y-2.5">
+              {techStack.map((item) => (
+                <div key={item.label} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                    {item.icon}
+                  </span>
+                  <div>
+                    <span className="font-semibold text-gray-700">{item.label}:</span>{" "}
+                    {item.detail}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">What Devin Did</h3>
+            <ol className="list-decimal list-inside space-y-1.5 text-gray-600">
+              <li>Configured the repository for Vercel deployment with serverless API routes</li>
+              <li>Connected the app to a Supabase PostgreSQL database via connection pooler</li>
+              <li>Resolved ESM module resolution issues for Vercel&apos;s Node.js runtime</li>
+              <li>Ran end-to-end tests across all features (deposits, withdrawals, history, export)</li>
+              <li>Redesigned the UI from a dark theme to Westpac-style branding with red/white palette</li>
+              <li>Added the WBA logo and updated app titling</li>
+              <li>Generated 50 test accounts with randomised balances and transaction histories</li>
+              <li>Implemented proper currency formatting with thousand separators</li>
+            </ol>
+          </div>
+
+          <p className="text-xs text-gray-400 pt-1">
+            Built with Devin &middot; Cognition AI &middot; {new Date().getFullYear()}
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }

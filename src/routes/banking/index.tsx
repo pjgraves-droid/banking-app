@@ -6,6 +6,13 @@ import {
   Download,
   Search,
   AlertTriangle,
+  ChevronDown,
+  Code,
+  Database,
+  Globe,
+  Paintbrush,
+  Timer,
+  Cpu,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -109,11 +116,13 @@ function BankingDashboard() {
       </div>
 
       {/* Tab Content */}
-      <div className="card p-6 mb-10">
+      <div className="card p-6 mb-6">
         {activeTab === "funds" && <FundsTab />}
         {activeTab === "history" && <HistoryTab />}
         {activeTab === "export" && <ExportTab />}
       </div>
+
+      <HowItWasBuilt />
     </div>
   );
 }
@@ -333,4 +342,77 @@ async function getErrorMessage(err: unknown): Promise<string> {
   }
   if (err instanceof Error) return err.message;
   return "An unexpected error occurred.";
+}
+
+function HowItWasBuilt() {
+  const [open, setOpen] = useState(false);
+
+  const techStack = [
+    { icon: <Code size={16} />, label: "Frontend", detail: "React 19, TypeScript, Tailwind CSS, TanStack Router" },
+    { icon: <Cpu size={16} />, label: "Backend", detail: "Vercel Serverless Functions (Node.js), Drizzle ORM" },
+    { icon: <Database size={16} />, label: "Database", detail: "PostgreSQL hosted on Supabase (connection pooler)" },
+    { icon: <Globe size={16} />, label: "Hosting", detail: "Vercel with automatic CI/CD from GitHub" },
+    { icon: <Paintbrush size={16} />, label: "Design", detail: "Westpac-inspired branding with custom Tailwind theme" },
+  ];
+
+  return (
+    <div className="mb-10">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-xl bg-white px-5 py-4 text-left shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
+      >
+        <span className="text-sm font-semibold text-gray-700">How this app was built</span>
+        <ChevronDown size={18} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="mt-2 rounded-xl bg-white px-6 py-5 shadow-sm border border-gray-100 space-y-5 text-sm text-gray-600 leading-relaxed">
+          <p>
+            This application was built end-to-end by{" "}
+            <a href="https://devin.ai" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-600 hover:underline">
+              Devin
+            </a>
+            , an autonomous AI software engineer developed by Cognition AI. The entire process — from initial deployment
+            to database configuration, UI design, and test data generation — was completed in a single session
+            taking approximately <strong>2 hours</strong>.
+          </p>
+
+          <div>
+            <h3 className="mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Technology Stack</h3>
+            <div className="space-y-2.5">
+              {techStack.map((item) => (
+                <div key={item.label} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                    {item.icon}
+                  </span>
+                  <div>
+                    <span className="font-semibold text-gray-700">{item.label}:</span>{" "}
+                    {item.detail}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">What Devin Did</h3>
+            <ol className="list-decimal list-inside space-y-1.5 text-gray-600">
+              <li>Configured the repository for Vercel deployment with serverless API routes</li>
+              <li>Connected the app to a Supabase PostgreSQL database via connection pooler</li>
+              <li>Resolved ESM module resolution issues for Vercel&apos;s Node.js runtime</li>
+              <li>Ran end-to-end tests across all features (deposits, withdrawals, history, export)</li>
+              <li>Redesigned the UI from a dark theme to Westpac-style branding with red/white palette</li>
+              <li>Added the WBA logo and updated app titling</li>
+              <li>Generated 50 test accounts with randomised balances and transaction histories</li>
+              <li>Implemented proper currency formatting with thousand separators</li>
+            </ol>
+          </div>
+
+          <p className="text-xs text-gray-400 pt-1">
+            Built with Devin &middot; Cognition AI &middot; {new Date().getFullYear()}
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }

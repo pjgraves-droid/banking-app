@@ -97,7 +97,7 @@ export function FormFactory({
         <button
           type="submit"
           disabled={!isValid || isPending}
-          className="rounded-lg bg-zinc-100 px-5 py-2 text-sm font-medium text-zinc-900 hover:bg-white disabled:opacity-40"
+          className="rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 active:bg-brand-800 disabled:opacity-40 transition-colors"
         >
           {isPending ? "…" : config.submitLabel}
         </button>
@@ -105,7 +105,7 @@ export function FormFactory({
           <button
             type="button"
             onClick={onReset}
-            className="rounded-lg border border-zinc-700 px-5 py-2 text-sm font-medium text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+            className="rounded-xl border border-gray-200 px-6 py-2.5 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors"
           >
             {config.resetLabel}
           </button>
@@ -125,9 +125,9 @@ function FieldRenderer({
   onChange: (v: string) => void;
 }) {
   const labelEl = (
-    <label className="mb-1.5 block text-xs font-medium text-zinc-400">
+    <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">
       {field.label}
-      {field.required && <span className="ml-0.5 text-red-400">*</span>}
+      {field.required && <span className="ml-0.5 text-brand-600">*</span>}
     </label>
   );
 
@@ -142,7 +142,7 @@ function FieldRenderer({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
           />
         </div>
       );
@@ -153,7 +153,7 @@ function FieldRenderer({
           <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:border-zinc-500 focus:outline-none"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
           >
             <option value="">{field.placeholder ?? "Select…"}</option>
             {field.options.map((o) => (
@@ -168,14 +168,14 @@ function FieldRenderer({
       return (
         <div>
           {labelEl}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             {field.options.map((o) => (
               <label
                 key={o.value}
-                className={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm ${
+                className={`cursor-pointer rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
                   value === o.value
-                    ? "border-zinc-400 bg-zinc-800 text-zinc-100"
-                    : "border-zinc-700 text-zinc-500 hover:border-zinc-600"
+                    ? "border-brand-600 bg-brand-50 text-brand-600 shadow-sm"
+                    : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
                 }`}
               >
                 <input

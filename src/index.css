@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-height: 100vh;
+}
+
+.card {
+  @apply rounded-lg border border-zinc-800 bg-zinc-900;
+}

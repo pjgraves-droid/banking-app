@@ -83,7 +83,7 @@ export function FormFactory({
         e.preventDefault();
         onSubmit();
       }}
-      className="space-y-5"
+      className="space-y-4 sm:space-y-5"
     >
       {config.fields.map((field) => (
         <FieldRenderer
@@ -93,11 +93,11 @@ export function FormFactory({
           onChange={(v) => setValue(field.name, v)}
         />
       ))}
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 pt-2 flex-wrap">
         <button
           type="submit"
           disabled={!isValid || isPending}
-          className="rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 active:bg-brand-800 disabled:opacity-40 transition-colors"
+          className="rounded-xl bg-brand-600 px-5 sm:px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 active:bg-brand-800 disabled:opacity-40 transition-colors"
         >
           {isPending ? "…" : config.submitLabel}
         </button>
@@ -105,7 +105,7 @@ export function FormFactory({
           <button
             type="button"
             onClick={onReset}
-            className="rounded-xl border border-gray-200 px-6 py-2.5 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors"
+            className="rounded-xl border border-gray-200 px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-colors"
           >
             {config.resetLabel}
           </button>
@@ -142,7 +142,7 @@ function FieldRenderer({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
+            className="w-full rounded-xl border border-gray-200 bg-white px-3 sm:px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
           />
         </div>
       );
@@ -153,7 +153,7 @@ function FieldRenderer({
           <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
+            className="w-full rounded-xl border border-gray-200 bg-white px-3 sm:px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition-all"
           >
             <option value="">{field.placeholder ?? "Select…"}</option>
             {field.options.map((o) => (

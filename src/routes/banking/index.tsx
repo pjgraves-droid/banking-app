@@ -92,16 +92,16 @@ function BankingDashboard() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-8">
       {/* Header */}
-      <div className="relative -mx-4 sm:-mx-8 mb-8 overflow-hidden bg-gradient-to-br from-brand-600 to-brand-700 px-8 pb-8 pt-10">
+      <div className="relative -mx-4 sm:-mx-8 mb-6 sm:mb-8 overflow-hidden bg-gradient-to-br from-brand-600 to-brand-700 px-4 sm:px-8 pb-6 sm:pb-8 pt-8 sm:pt-10">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white" />
           <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white" />
         </div>
         <div className="relative flex items-center gap-4">
-          <img src="/WBA_Logo.jpg" alt="Westpac" className="h-10 rounded-lg" />
+          <img src="/WBA_Logo.jpg" alt="Westpac" className="h-8 sm:h-10 rounded-lg" />
           <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">Account Balance Management</h1>
-            <p className="text-sm text-white/70">
+            <h1 className="text-base sm:text-xl font-bold text-white tracking-tight">Account Balance Management</h1>
+            <p className="text-xs sm:text-sm text-white/70 hidden sm:block">
               Manage balances, transactions, and audit exports
             </p>
           </div>
@@ -109,14 +109,14 @@ function BankingDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-xl bg-white p-1 shadow-sm border border-gray-100">
+      <div className="mb-4 sm:mb-6 flex gap-1 rounded-xl bg-white p-1 shadow-sm border border-gray-100">
         <TabButton active={activeTab === "funds"} onClick={() => setTab("funds")} icon={<Landmark size={15} />} label="Funds Movement" />
         <TabButton active={activeTab === "history"} onClick={() => setTab("history")} icon={<Clock size={15} />} label="Transaction History" />
         <TabButton active={activeTab === "export"} onClick={() => setTab("export")} icon={<Download size={15} />} label="Export for Audit" />
       </div>
 
       {/* Tab Content */}
-      <div className="card p-6 mb-6">
+      <div className="card p-4 sm:p-6 mb-6">
         {activeTab === "funds" && <FundsTab />}
         {activeTab === "history" && <HistoryTab />}
         {activeTab === "export" && <ExportTab />}
@@ -131,14 +131,14 @@ function TabButton({ active, onClick, icon, label }: { active: boolean; onClick:
   return (
     <button
       onClick={onClick}
-      className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-xs font-semibold transition-all ${
+      className={`flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold transition-all ${
         active
           ? "bg-brand-600 text-white shadow-sm"
           : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
       }`}
     >
       {icon}
-      {label}
+      <span className="truncate">{label}</span>
     </button>
   );
 }
@@ -250,19 +250,20 @@ function TransactionTable({ transactions }: { transactions: Transaction[] }) {
   if (transactions.length === 0) return <p className="text-sm text-gray-400">No transaction records match the selected criteria.</p>;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-100">
+    <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+    <div className="overflow-hidden rounded-xl border border-gray-100 min-w-[480px] sm:min-w-0">
       <table className="w-full text-left text-sm">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50">
-            <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date/Time</th>
-            <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
-            <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Amount</th>
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date/Time</th>
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+            <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((tx) => (
             <tr key={tx.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
-              <td className="px-4 py-3 font-mono text-xs text-gray-500">{new Date(tx.transactionDatetime).toLocaleString()}</td>
+              <td className="px-3 sm:px-4 py-3 font-mono text-xs text-gray-500 whitespace-nowrap">{new Date(tx.transactionDatetime).toLocaleString()}</td>
               <td className="px-4 py-3">
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium">
                   {tx.transactionType === "Deposit" ? (
@@ -277,11 +278,12 @@ function TransactionTable({ transactions }: { transactions: Transaction[] }) {
                   <span className="text-gray-700">{tx.transactionType}</span>
                 </span>
               </td>
-              <td className="px-4 py-3 text-right font-mono font-semibold text-gray-800">${formatCurrency(tx.amount)}</td>
+              <td className="px-3 sm:px-4 py-3 text-right font-mono font-semibold text-gray-800 whitespace-nowrap">${formatCurrency(tx.amount)}</td>
             </tr>
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
@@ -359,14 +361,14 @@ function HowItWasBuilt() {
     <div className="mb-10">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between rounded-xl bg-white px-5 py-4 text-left shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
+        className="flex w-full items-center justify-between rounded-xl bg-white px-4 sm:px-5 py-3 sm:py-4 text-left shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
       >
         <span className="text-sm font-semibold text-gray-700">How this app was built</span>
         <ChevronDown size={18} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="mt-2 rounded-xl bg-white px-6 py-5 shadow-sm border border-gray-100 space-y-5 text-sm text-gray-600 leading-relaxed">
+        <div className="mt-2 rounded-xl bg-white px-4 sm:px-6 py-4 sm:py-5 shadow-sm border border-gray-100 space-y-4 sm:space-y-5 text-sm text-gray-600 leading-relaxed">
           <p>
             This application was built end-to-end by{" "}
             <a href="https://devin.ai" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-600 hover:underline">
